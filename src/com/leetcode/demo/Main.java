@@ -1,5 +1,7 @@
 package com.leetcode.demo;
 
+import com.leetcode.demo.base.BinarySearch;
+import com.leetcode.demo.base.QuickSort;
 import com.leetcode.demo.base.ReverseSingleLinkedList;
 import com.leetcode.demo.simple.dynamicPlanning.MaxProfit2;
 import com.leetcode.demo.simple.dynamicPlanning.MaxSubArray;
@@ -37,9 +39,9 @@ public class Main {
 
 //        BinarySearch.test();
 
-//        QuickSort.test();
+        QuickSort.test();
 //        InsertSort.test();
-        ReverseSingleLinkedList.test();
+//        ReverseSingleLinkedList.test();
 
 //        ClimbStairs.test();
 //        MaxSubArray.test();

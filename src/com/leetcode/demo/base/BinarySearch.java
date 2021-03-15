@@ -1,11 +1,13 @@
 package com.leetcode.demo.base;
 
+import java.util.Arrays;
+
 //二分查找
 public class BinarySearch {
 
     public static void test() {
         int[] arr = {1, 2, 3, 5, 6, 7, 8, 9};
-        binarySearch2(12, arr);
+        binarySearch3(4, arr);
     }
 
     //[1,2,3,4,5,6,7,8,9]  3
@@ -63,6 +65,35 @@ public class BinarySearch {
             }
         }
         System.out.println("没有找到 target = " + target);
+    }
+
+    private static void binarySearch3(int target, int[] arr) {
+
+        if (arr == null || arr.length == 0 || target < arr[0]) {
+            System.out.println("target = " + target + "没有找到");
+            return;
+        }
+        int length = arr.length;
+        int low = 0;
+        int high = length - 1;
+
+        if (target > arr[high]) {
+            System.out.println("target = " + target + "没有找到");
+            return;
+        }
+        int mid;
+        while (low <= high) {
+            mid = (low + high) / 2;
+            if (target > arr[mid]) {
+                low = mid + 1;
+            } else if (target < arr[mid]) {
+                high = mid - 1;
+            } else {
+                System.out.println("target = " + target + ", mid = " + mid);
+                return;
+            }
+        }
+        System.out.println("target = " + target + "没有找到");
     }
 }
 
