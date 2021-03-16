@@ -81,4 +81,9 @@ public class InsertSort {
             }
         }
     }
+
+
+    public static void insertSortIncrease3(int[] arr) {
+
+    }
 }

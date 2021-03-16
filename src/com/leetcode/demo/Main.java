@@ -3,6 +3,7 @@ package com.leetcode.demo;
 import com.leetcode.demo.base.BinarySearch;
 import com.leetcode.demo.base.QuickSort;
 import com.leetcode.demo.base.ReverseSingleLinkedList;
+import com.leetcode.demo.simple.array.RemoveDuplicates;
 import com.leetcode.demo.simple.dynamicPlanning.MaxProfit2;
 import com.leetcode.demo.simple.dynamicPlanning.MaxSubArray;
 import com.leetcode.demo.simple.linkedList.HasCycle;
@@ -23,7 +24,7 @@ public class Main {
 //        RomanToInt.test();
 //        ThreeSum.test();
 //        ThreeSumClosest.test();
-//        RemoveDuplicates.test();
+        RemoveDuplicates.test();
 //        SingleNumber.test();
 //        IntersectArray.test();
 //        PlusOne.test();
@@ -50,7 +51,7 @@ public class Main {
 
 //        HasCycle.test();
 
-        ThreadSynchronizationDemo.test();
+//        ThreadSynchronizationDemo.test();
     }
 
 }

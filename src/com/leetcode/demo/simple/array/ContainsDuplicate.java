@@ -9,8 +9,9 @@ import java.util.HashMap;
  */
 public class ContainsDuplicate {
 
-    public boolean containsDuplicate(int[] nums) {
-        if (nums == null){
+
+    private boolean containsDuplicate(int[] nums) {
+        if (nums == null) {
             return false;
         }        //N+NlogN
         Arrays.sort(nums);
@@ -22,7 +23,7 @@ public class ContainsDuplicate {
         return false;
     }
 
-    public boolean containsDuplicate2(int[] nums) {
+    private boolean containsDuplicate2(int[] nums) {
         //N+NlogN
         HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length - 1; i++) {
@@ -31,6 +32,23 @@ public class ContainsDuplicate {
                 return true;
             }
             map.put(nums[i], i);
+        }
+        return false;
+    }
+
+    //[1,2,3,4,5,6,5]
+    //快排+两个相邻的数比较
+    private boolean containsDuplicate3(int[] nums) {
+        if (nums == null || nums.length < 2) {
+            return false;
+        }
+        Arrays.sort(nums);
+
+        int length = nums.length;
+        for (int i = 0; i < length - 1; i++) {
+            if (nums[i] == nums[i+1]){
+                return true;
+            }
         }
         return false;
     }
