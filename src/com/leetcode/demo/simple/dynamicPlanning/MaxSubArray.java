@@ -4,8 +4,9 @@ package com.leetcode.demo.simple.dynamicPlanning;
 public class MaxSubArray {
 
     public static void test() {
-        int[] arr = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
-        int maxSub = maxSubArray2(arr);
+//        int[] arr = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+        int[] arr = {-10000};
+        int maxSub = maxSubArray3(arr);
         System.out.println("maxSub:" + maxSub);
     }
 
@@ -53,6 +54,23 @@ public class MaxSubArray {
             maxSub = Math.max(max, maxSub);
         }
 
+        return maxSub;
+    }
+
+    //{-2, 1, -3, 4, -1, 2, 1, -1, 4};
+    //当max<0 时，再往后追加也不会成为最大和的连续数组，所以中断重新计算；
+    //每次循环比较当前连续最大值和上一个最大和的连续数组；
+    private static int maxSubArray3(int[] nums) {
+        int maxSub = -100000;
+        int max = 0;
+        for (int num : nums) {
+            if (max > 0) {
+                max += num;
+            } else {
+                max = num;
+            }
+            maxSub = Math.max(maxSub, max);
+        }
         return maxSub;
     }
 }

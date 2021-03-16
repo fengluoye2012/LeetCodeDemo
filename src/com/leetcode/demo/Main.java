@@ -5,6 +5,8 @@ import com.leetcode.demo.base.QuickSort;
 import com.leetcode.demo.base.ReverseSingleLinkedList;
 import com.leetcode.demo.simple.dynamicPlanning.MaxProfit2;
 import com.leetcode.demo.simple.dynamicPlanning.MaxSubArray;
+import com.leetcode.demo.simple.linkedList.HasCycle;
+import com.leetcode.demo.thread.ThreadSynchronizationDemo;
 
 public class Main {
 
@@ -39,12 +41,16 @@ public class Main {
 
 //        BinarySearch.test();
 
-        QuickSort.test();
+//        QuickSort.test();
 //        InsertSort.test();
 //        ReverseSingleLinkedList.test();
 
 //        ClimbStairs.test();
 //        MaxSubArray.test();
+
+//        HasCycle.test();
+
+        ThreadSynchronizationDemo.test();
     }
 
 }
