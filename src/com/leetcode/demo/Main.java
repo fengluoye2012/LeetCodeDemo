@@ -1,6 +1,7 @@
 package com.leetcode.demo;
 
 import com.leetcode.demo.base.BinarySearch;
+import com.leetcode.demo.base.InsertSort;
 import com.leetcode.demo.base.QuickSort;
 import com.leetcode.demo.base.ReverseSingleLinkedList;
 import com.leetcode.demo.simple.array.RemoveDuplicates;
@@ -24,7 +25,7 @@ public class Main {
 //        RomanToInt.test();
 //        ThreeSum.test();
 //        ThreeSumClosest.test();
-        RemoveDuplicates.test();
+//        RemoveDuplicates.test();
 //        SingleNumber.test();
 //        IntersectArray.test();
 //        PlusOne.test();
@@ -43,7 +44,7 @@ public class Main {
 //        BinarySearch.test();
 
 //        QuickSort.test();
-//        InsertSort.test();
+        InsertSort.test();
 //        ReverseSingleLinkedList.test();
 
 //        ClimbStairs.test();
