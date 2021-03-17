@@ -4,6 +4,7 @@ import com.leetcode.demo.base.BinarySearch;
 import com.leetcode.demo.base.InsertSort;
 import com.leetcode.demo.base.QuickSort;
 import com.leetcode.demo.base.ReverseSingleLinkedList;
+import com.leetcode.demo.middle.array.ThreeSum2;
 import com.leetcode.demo.simple.array.RemoveDuplicates;
 import com.leetcode.demo.simple.dynamicPlanning.MaxProfit2;
 import com.leetcode.demo.simple.dynamicPlanning.MaxSubArray;
@@ -44,7 +45,7 @@ public class Main {
 //        BinarySearch.test();
 
 //        QuickSort.test();
-        InsertSort.test();
+//        InsertSort.test();
 //        ReverseSingleLinkedList.test();
 
 //        ClimbStairs.test();
@@ -53,6 +54,8 @@ public class Main {
 //        HasCycle.test();
 
 //        ThreadSynchronizationDemo.test();
+
+        ThreeSum2.test();
     }
 
 }

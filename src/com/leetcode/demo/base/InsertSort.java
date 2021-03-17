@@ -118,7 +118,7 @@ public class InsertSort {
             int temValue = arr[i];//记录下需要比较的value;
             for (int j = i - 1; j >= 0; j--) {
                 int valueJ = arr[j];
-                //小于则往后移动
+                //temValue小于将已排序的元素往后移动
                 if (temValue < valueJ) {
                     arr[j + 1] = valueJ;
                     //如果已经到0 则将temValue 放在index=0上
@@ -126,7 +126,7 @@ public class InsertSort {
                         arr[0] = temValue;
                     }
                 } else {
-                    //跳过
+                    //temValue 大于已排序的元素，则
                     arr[j + 1] = temValue;
                     break;
                 }
