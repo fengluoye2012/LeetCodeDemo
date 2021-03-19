@@ -12,7 +12,8 @@ public class ThreeSum2 {
     public static void test() {
 //        int[] arr = {-1, 0, 1, 2, -1, -4};
 //        int[] arr = {0, 0, 0, 0};
-        int[] arr = {-1, 0, 1, 2, -1, -4, -2, -3, 3, 0, 4};
+//        int[] arr = {-1, 0, 1, 2, -1, -4, -2, -3, 3, 0, 4};
+        int[] arr = {-2, 0, 0, 2, 2};
         List<List<Integer>> lists = threeSum(arr);
         System.out.println("size:" + lists.size());
         for (List<Integer> list : lists) {
@@ -20,60 +21,75 @@ public class ThreeSum2 {
         }
     }
 
-    //输入：nums = [-1,0,1,2,-1,-4]  [-4,-2,-1,-1,0,1,2]   [0,0,0,0]
-    //输出：[[-1,-1,2],[-1,0,1]]
+
+    /**
+     *
+     * @param nums
+     * @return
+     */
     private static List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> targetList = new ArrayList<>();
         if (nums == null) {
             return targetList;
         }
+
         //先排序
         Arrays.sort(nums);
 
-        int length = nums.length;
         int target = Integer.MAX_VALUE;
-        int curTarget;
-        //倒序[-4,-3,-2,-1,-1,0,0,1,2,3,4]
+        int length = nums.length;
+        int slowValue;
+        int fastValue;
         for (int i = length - 1; i >= 2; i--) {
-            if (target == nums[i]) {
+            //已经排序过，如果target小于0，则从小于target的部分也无法目标a和b;
+            if (nums[i] < 0) {
                 continue;
             }
-            target = nums[i];
+
+            //过滤掉相同的target
+            if (i < length - 1 && nums[i] == target) {
+                continue;
+            }
+
             int slow = 0;
             int fast = i - 1;
-
-            int slowValue = Integer.MAX_VALUE;
-            int fastValue = Integer.MAX_VALUE;
-            curTarget = -target;
+            target = nums[i];
             while (slow < fast) {
-                //两个相邻的值相同 则跳过
-                if (slowValue == nums[slow]) {
-                    slow++;
-                    continue;
-                }
-
-                if (fastValue == nums[fast]) {
-                    fast--;
-                    continue;
-                }
-
                 slowValue = nums[slow];
                 fastValue = nums[fast];
 
-                int sum = nums[slow] + nums[fast];
-                if (sum < curTarget) {
+                int sum = slowValue + fastValue;
+                if (sum < -target) {
                     slow++;
-                } else if (sum > curTarget) {
-                    fast--;
-                } else {
-                    List<Integer> subList = new ArrayList<>();
-                    subList.add(nums[slow]);
-                    subList.add(nums[fast]);
-                    subList.add(target);
-                    targetList.add(subList);
+                    continue;
+                }
 
-                    slow++;
+                if (sum > -target) {
                     fast--;
+                    continue;
+                }
+
+                List<Integer> subList = new ArrayList<>();
+                subList.add(slowValue);
+                subList.add(fastValue);
+                subList.add(target);
+                targetList.add(subList);
+
+
+                //过滤掉相同的slow对应的value
+                while (slow < i) {
+                    slow++;
+                    if (slowValue != nums[slow]) {
+                        break;
+                    }
+                }
+
+                //过滤掉相同的fast对应的value
+                while (fast > 0) {
+                    fast--;
+                    if (fastValue != nums[fast]) {
+                        break;
+                    }
                 }
             }
         }
