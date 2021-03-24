@@ -7,7 +7,7 @@ package com.leetcode.demo.middle.array;
 public class LongestPalindromeStr {
 
     public static void test() {
-        String palindrome = longestPalindrome("babad");
+        String palindrome = longestPalindrome3("babad");
         System.out.println("palindrome:" + palindrome);
     }
 
@@ -36,28 +36,45 @@ public class LongestPalindromeStr {
     }
 
 
-    //abcba
+    //abcba1
     //1bb1
-    private static String longestPalindrome2(String s) {
-        if (s == null || s.length() < 2 || isPalindrome(s)) {
+    //11ms 击败93%的用户
+    private static String longestPalindrome3(String s) {
+        if (s == null || s.length() == 0) {
             return s;
         }
 
-        int length = s.length() + 1;
-        String sub;
-        String longest = s.substring(0, 1);
-
-        //找到各种连续子串，判断是否为回文子串
-        for (int i = 1; i < length; i++) {
-            for (int j = 0; j < i; j++) {
-                sub = s.substring(j, i + (i - j));
-                if (isPalindrome(sub)) {
-                    longest = sub;
-                    break;
-                }
-            }
+        char[] chars = s.toCharArray();
+        int[] range = new int[2];
+        //回文串 中间相同 两边对称
+        for (int i = 0; i < chars.length - 1; i++) {
+            i = findLongest2(i, chars, range);
         }
-        return longest;
+        return s.substring(range[0], range[1] + 1);
+    }
+
+
+    private static int findLongest2(int low, char[] chars, int[] range) {
+        int high = low;
+        //找到中间相等部分
+        while (high < chars.length - 1 && chars[low] == chars[high + 1]) {
+            high++;
+        }
+
+        //定位中间部分的最后一个字符,可以将ans作为返回值返回，改变i;重复的元素可以跳过
+        int ans = high;
+
+        //两边对称
+        while (low > 0 && high < chars.length - 1 && chars[low - 1] == chars[high + 1]) {
+            low--;
+            high++;
+        }
+
+        if (range[1] - range[0] < high - low) {
+            range[0] = low;
+            range[1] = high;
+        }
+        return ans;
     }
 
     //aa aba
