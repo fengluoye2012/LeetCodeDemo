@@ -7,6 +7,7 @@ import com.leetcode.demo.base.ReverseSingleLinkedList;
 import com.leetcode.demo.middle.array.LengthOfLongestSubstring;
 import com.leetcode.demo.middle.array.LongestPalindromeStr;
 import com.leetcode.demo.middle.array.ThreeSum2;
+import com.leetcode.demo.other.MetaJavaQuestionSheet;
 import com.leetcode.demo.simple.array.RemoveDuplicates;
 import com.leetcode.demo.simple.dynamicPlanning.MaxProfit2;
 import com.leetcode.demo.simple.dynamicPlanning.MaxSubArray;
@@ -60,7 +61,9 @@ public class Main {
 //        ThreeSum2.test();
 //        LengthOfLongestSubstring.test();
 
-        LongestPalindromeStr.test();
+//        LongestPalindromeStr.test();
+
+//        MetaJavaQuestionSheet.test();
     }
 
 }
