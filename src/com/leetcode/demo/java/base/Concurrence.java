@@ -1,8 +1,7 @@
 package com.leetcode.demo.java.base;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 /**
+ * 并发编程:https://www.codercc.com/backend/basic/juc/
  * Java内存模型：
  * 并发编程：
  * 1、可见性、有序性、原子性
@@ -14,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 模型本身就是安全的，无需同步：
  * https://zhuanlan.zhihu.com/p/25577863
  */
-public class SynchronizedTest {
+public class Concurrence {
 
     public volatile int a =10;
 
