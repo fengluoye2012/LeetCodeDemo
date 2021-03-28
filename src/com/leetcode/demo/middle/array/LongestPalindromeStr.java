@@ -7,7 +7,7 @@ package com.leetcode.demo.middle.array;
 public class LongestPalindromeStr {
 
     public static void test() {
-        String palindrome = longestPalindrome("babad");
+        String palindrome = longestPalindrome2("babad");
         System.out.println("palindrome:" + palindrome);
     }
 
@@ -37,27 +37,46 @@ public class LongestPalindromeStr {
 
 
     //abcba
-    //1bb1
+    //1bb11
     private static String longestPalindrome2(String s) {
-        if (s == null || s.length() < 2 || isPalindrome(s)) {
+        if (s == null || s.length() == 0) {
             return s;
         }
+        int length = s.length();
 
-        int length = s.length() + 1;
-        String sub;
-        String longest = s.substring(0, 1);
-
-        //找到各种连续子串，判断是否为回文子串
-        for (int i = 1; i < length; i++) {
-            for (int j = 0; j < i; j++) {
-                sub = s.substring(j, i + (i - j));
-                if (isPalindrome(sub)) {
-                    longest = sub;
-                    break;
-                }
-            }
+        int[] range = new int[2];
+        char[] chars = s.toCharArray();
+        //把回文看成中间的部分全是同一字符，左右部分相对称
+        //找到下一个与当前字符不同的字符
+        for (int i = 0; i < length; i++) {
+            i = findLongest(chars, i, range);
         }
-        return longest;
+        return s.substring(range[0], range[1] + 1);
+    }
+
+    //ababa
+    //把回文看成中间的部分全是同一字符，左右部分相对称
+    private static int findLongest(char[] chars, int low, int[] range) {
+        int high = low;
+        //找到中间部分
+        while (high < chars.length - 1 && chars[high + 1] == chars[low]) {
+            high++;
+        }
+
+        //定位中间部分的最后一个字符
+        int ans = high;
+        //从中间往左右扩散
+        while (low > 0 && high < chars.length - 1 && chars[low - 1] == chars[high + 1]) {
+            low--;
+            high++;
+        }
+
+        //记录最大长度
+        if (high - low > range[1] - range[0]) {
+            range[0] = low;
+            range[high] = high;
+        }
+        return ans;
     }
 
     //aa aba
