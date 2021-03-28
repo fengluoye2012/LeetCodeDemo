@@ -13,6 +13,8 @@ import com.leetcode.demo.simple.dynamicPlanning.MaxProfit2;
 import com.leetcode.demo.simple.dynamicPlanning.MaxSubArray;
 import com.leetcode.demo.simple.linkedList.HasCycle;
 import com.leetcode.demo.thread.ThreadSynchronizationDemo;
+import com.leetcode.demo.java.base.CodeBlock;
+import com.leetcode.demo.java.base.Swallow;
 
 public class Main {
 
@@ -61,6 +63,12 @@ public class Main {
 //        ThreeSum2.test();
 //        LengthOfLongestSubstring.test();
 
+//        LongestPalindromeStr.test();
+
+//        CodeBlock test = new CodeBlock();
+//        test.println();
+
+        Swallow swallow = new Swallow();
 //        LongestPalindromeStr.test();
 
 //        MetaJavaQuestionSheet.test();

@@ -43,7 +43,17 @@ public class LongestPalindromeStr {
         if (s == null || s.length() == 0) {
             return s;
         }
+        int length = s.length();
 
+        int[] range = new int[2];
+        char[] chars = s.toCharArray();
+        //把回文看成中间的部分全是同一字符，左右部分相对称
+        //找到下一个与当前字符不同的字符
+        for (int i = 0; i < length; i++) {
+            i = findLongest(chars, i, range);
+        }
+        return s.substring(range[0], range[1] + 1);
+    }
         char[] chars = s.toCharArray();
         int[] range = new int[2];
         //回文串 中间相同 两边对称
@@ -54,6 +64,27 @@ public class LongestPalindromeStr {
     }
 
 
+    //ababa
+    //把回文看成中间的部分全是同一字符，左右部分相对称
+    private static int findLongest(char[] chars, int low, int[] range) {
+        int high = low;
+        //找到中间部分
+        while (high < chars.length - 1 && chars[high + 1] == chars[low]) {
+            high++;
+        }
+
+        //定位中间部分的最后一个字符
+        int ans = high;
+        //从中间往左右扩散
+        while (low > 0 && high < chars.length - 1 && chars[low - 1] == chars[high + 1]) {
+            low--;
+            high++;
+        }
+
+        //记录最大长度
+        if (high - low > range[1] - range[0]) {
+            range[0] = low;
+            range[high] = high;
     private static int findLongest2(int low, char[] chars, int[] range) {
         int high = low;
         //找到中间相等部分
