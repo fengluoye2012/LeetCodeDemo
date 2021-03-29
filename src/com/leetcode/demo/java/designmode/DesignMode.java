@@ -1,4 +1,4 @@
-package com.leetcode.demo.designmode;
+package com.leetcode.demo.java.designmode;
 
 /**
  * 设计模式：http://c.biancheng.net/view/1322.html
@@ -23,8 +23,9 @@ package com.leetcode.demo.designmode;
  * 门面模式：
  * 命令模式：
  * 策略模式：
- * 桥接模式:对于多维因素影响类的稳定性，使用组合的方式来实现；如有颜色的包：影响因素有颜色和包的种类；使用继承方式实现类太多；
- * 访问者模式：
+ *
+ * - 桥接模式:对于多维因素影响类的稳定性，使用组合的方式来实现；如有颜色的包：影响因素有颜色和包的种类；使用继承方式实现类太多；
+ * - 访问者模式：
  */
 public class DesignMode {
 }
