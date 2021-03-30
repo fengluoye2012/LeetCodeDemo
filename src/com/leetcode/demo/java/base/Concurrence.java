@@ -7,10 +7,9 @@ package com.leetcode.demo.java.base;
  * 1、可见性、有序性、原子性
  * 2、volatile:可见性、有序性
  * 3、实现线程安全：
- * 互斥同步（阻塞同步）：
- *     synchronized、ReentrantLock、闭锁(Latch、CountDownLatch)、栅栏(CyclicBarrier)、信号量
- * 非阻塞同步：CAS、原子类；可以实现无锁队列（ConcurrentLinkedQueue）
- * 模型本身就是安全的，无需同步：ThreadLocal 线程本地空间中
+ *    - 互斥同步（阻塞同步）：synchronized、ReentrantLock、闭锁(Latch、CountDownLatch)、栅栏(CyclicBarrier)、信号量
+ *    - 非阻塞同步：CAS、原子类；可以实现无锁队列（ConcurrentLinkedQueue）
+ *    - 模型本身就是安全的，无需同步：ThreadLocal 线程本地空间中
  * https://zhuanlan.zhihu.com/p/25577863
  */
 public class Concurrence {
