@@ -1,4 +1,4 @@
-package com.leetcode.demo.java.base;
+package com.leetcode.demo.java.base.codeblock;
 
 /**
  * 类的生命周期：加载-链接-初始化-使用-卸载

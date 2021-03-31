@@ -1,20 +1,6 @@
 package com.leetcode.demo;
 
-import com.leetcode.demo.base.BinarySearch;
-import com.leetcode.demo.base.InsertSort;
-import com.leetcode.demo.base.QuickSort;
-import com.leetcode.demo.base.ReverseSingleLinkedList;
-import com.leetcode.demo.middle.array.LengthOfLongestSubstring;
-import com.leetcode.demo.middle.array.LongestPalindromeStr;
-import com.leetcode.demo.middle.array.ThreeSum2;
-import com.leetcode.demo.other.MetaJavaQuestionSheet;
-import com.leetcode.demo.simple.array.RemoveDuplicates;
-import com.leetcode.demo.simple.dynamicPlanning.MaxProfit2;
-import com.leetcode.demo.simple.dynamicPlanning.MaxSubArray;
-import com.leetcode.demo.simple.linkedList.HasCycle;
-import com.leetcode.demo.thread.ThreadSynchronizationDemo;
-import com.leetcode.demo.java.base.CodeBlock;
-import com.leetcode.demo.java.base.Swallow;
+import com.leetcode.demo.java.base.codeblock.Swallow;
 
 public class Main {
 

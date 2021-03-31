@@ -1,4 +1,4 @@
-package com.leetcode.demo.java.base;
+package com.leetcode.demo.java.base.codeblock;
 
 public class Swallow extends Bird {
 

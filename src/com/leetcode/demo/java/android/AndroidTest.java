@@ -5,7 +5,7 @@ package com.leetcode.demo.java.android;
  *
  * 2、- Handler：
  *   - IdleHandler（在主线程空闲时执行同步任务，即可以做优先级低的业务逻辑；当messageQueue 为空时才执行；IdleHandler其实就是观察者模式，
- *   监听MessageQueue是否空闲，空闲时触发回调函数，为了避免过多导致耗时，最大为4个）
+ *   监听MessageQueue是否空闲，空闲时触发回调函数，为了避免过多导致耗时，最大为4个） todo 超过4个如何处理
  *   - view.post()：View的绘制在onResume() 之后，但是在onCreate()方法中通过view.post()获取view的宽高，view.post()也是调用Handler，
  *   对任务的运行时机做了调整，通过View.post()添加的任务西先保存在本地，是在View绘制流程的开始阶段，将所有任务重新发送到消息消息队列的尾部，
  *   此时相关的任务的执行已经在绘制任务之后，即View的绘制流程已经结束；
@@ -61,7 +61,7 @@ package com.leetcode.demo.java.android;
  *
  *    Android 中View的渲染、事件分发、键盘输入、Activity等的生命周期变化都是Handler消息机制处理；
  *
- * 9、LeakCanary的原理：https://blog.csdn.net/u011060103/article/details/104973708
+ * 9、LeakCanary的原理：https://blog.csdn.net/u011060103/article/details/104973708 todo
  *
  *
  */
