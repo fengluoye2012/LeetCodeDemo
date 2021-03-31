@@ -8,6 +8,10 @@ package com.leetcode.demo.java.base.codeblock;
  * - 静态代码块 static{} 类加载时会执行，只会被执行一次(第一次加载此类时执行，比如说用Class.forName("")加载类时就会执行 static  block
  * 优先于 构造代码块执行
  * - 同步代码块 synchronized(object) 线程安全
+ *
+ * 反射
+ *  - getDeclaredField():可以获取一个类的所有字段,不包含父类的字段；
+ *  - getFile():只能获取类的public 字段；
  */
 public class CodeBlock {
 
