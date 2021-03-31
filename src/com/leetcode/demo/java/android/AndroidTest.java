@@ -62,8 +62,32 @@ package com.leetcode.demo.java.android;
  *    Android 中View的渲染、事件分发、键盘输入、Activity等的生命周期变化都是Handler消息机制处理；
  *
  * 9、LeakCanary的原理：https://blog.csdn.net/u011060103/article/details/104973708 todo
+ *                    https://blog.csdn.net/lmq121210/article/details/85204165
+ *
+ *    - 创建RefWatcher， RefWatcher 是分析内存泄露的核心类；
+ *    - 给Application注册监听事件registerActivityLifecycleCallbacks，监听Activity的生命周期变化；
+ *    - 在onActivityDestroyed() 方法检测内存泄漏；传入当前Activity;
+ *    - 调用RefWatcher的watch()；将Activity、唯一标识UUID和ReferenceQueue作为参数，生成弱引用KeyedWeakReference；
+ *      ReferenceQueue的作用是:在适当的时候检测到对象的可达性发生改变后，垃圾回收器就将已注册的引用对象添加到此队列中；
+ *      简单来说：ReferenceQueue就是一个弱引用队列。然后垃圾回收器会自动的回收此队列中的对象。KeyedWeakReference 本质也就是将我们的Activity封装了一层，变成了唯一的一个弱引用对象。
+ *
+ *    - 开启子线程进行内存分析，删除弱引用，看是否此弱引用对象还存在，如果不存在，就返回，表明没有内存泄漏；
+ *      如果还存在，就手动调用GC，再次删除弱引用，再次判断此弱引用对象是否存在，如果还存在，就分析Dump内存快照。
+ *      注意这里判断弱引用是否存在的标识就是：上述源码生成的唯一标识key。
+ *
+ *    - 深度分析Hprof文件，单独开一个进程，开始深度分析
  *
  * 10、RxJava map和floatMap 区别
+ *     - map变换后可以返回任意值，flatMap只能返回ObservableSource类型
+ *     - map只能进行一对一的变换；flatMap可以进行一对一、一对多、多对多的变换，根据我们设置的变换函数mapper来定；
+ *
+ * 11、依赖注入Jetpack Hilt 、流式编程、LiveData
+ *     - 函数响应式编程：基于观察者模式/发布-订阅模式来实现的，https://www.imooc.com/article/280217
+ *     - LiveData:
+ *
+ * 12、Activity的onCreate() 中创建一个线程，和主线程相比，谁的优先级更高？
+ *
+ * 13、项目中如何创建module通信的service的(接口)?
  *
  */
 public class AndroidTest {
