@@ -1,7 +1,8 @@
 package com.leetcode.demo.java.datastructure;
 
 /**
- * HashMap
+ * HashMap：
+ *
  */
 public class HashMapTest {
 }

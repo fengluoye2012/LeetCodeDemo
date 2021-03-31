@@ -36,22 +36,34 @@ package com.leetcode.demo.java.android;
  * 6、app冷启动时间统计
  *
  * 7、anr上报:https://blog.csdn.net/ljcITworld/article/details/104420422
+ *   按键 5s 广播接受者 10s  后台 15s
  *   1）ANR-WatchDog 参考Android WatchDog机制，起了个单独线程向主线程发送一个变量+1的操作，然后休眠一定时间阈值
  *  （阈值可自定义，例如5s），休眠过后再判断变量是否已经+1，如果未完成则ANR告警；
  *   缺点：无法保证能捕获所有ANR，对阈值设置影响捕获概率。如时间过长，中间发生的ANR则可能被遗漏掉。
- *   2）监听系统信号量（XCrash）
- *   3) 重写loop 中 Printer的println()方法，判断handlerMessage()方法的执行时间
+ *   2）监听Linux系统信号量（XCrash）
+ *   3) 重写Loop 中 Printer的println()方法，判断handlerMessage()方法的执行时间,
  *   4）FileObserver 观察/data/data/anr目录 高版本手机不适用；
  *
- * 8、卡顿的监控：
+ * 8、卡顿的监控：为了保证应用的平滑性，每一帧渲染时间不能超过16ms，达到60帧每秒；如果UI渲染慢的话，就会发生丢帧，这样用户就会感觉到不连贯性，我们称之为Jank；
+ *    https://www.jianshu.com/p/9e8f88eac490
  *    1）CPU Profiler 和 Systrace 都是适合线下使用的，无法带到线上；
- *    2）重写主线程loop 中 Printer的println()方法，判断handlerMessage()方法的执行时间；如：BlockCanary 判断每秒种是否执行60次
- *    3）可以通过编译时给每个函数插桩的方式来实现，也就是在重要函数的入口和出口分别增加Trace.beginSection和Trace.endSection,
- *       当然出于性能的考虑，我们会过滤大部分指令数比较少的函数；只在主线程中监控；
- *    4)Choreographer：设置它的 FrameCallback，我们可以在每一帧被渲染的时候记录下它开始渲染的时间，这样在下一帧被处理时，
- *      我们不仅可以判断上一帧在渲染过程中是否出现掉帧，而整个过程都是实时处理的。
+ *    2）重写主线程Loop 中 Printer的println()方法，判断handlerMessage()方法的执行时间；如：BlockCanary 判断每次执行时间是否超过16ms;
+ *    3）Choreographer：Android系统每隔16ms发出VSYNC信号，触发对UI进行渲染；设置它的 FrameCallback，你设置的FrameCallback（doFrame方法）
+ *       会在下一个frame被渲染时触发。理论上来说两次回调的时间周期应该在16ms，如果超过了16ms我们则认为发生了卡顿，我们主要就是利用两次回调间的时间周期来判断，
  *
- * 9、LeakCanary的原理：http://www.youkmi.cn/2020/01/01/android-xing-neng-you-hua-zhi-leakcanary-nei-cun-yuan-li-fen-xi/
+ *    4）可以通过编译时给每个函数插桩的方式来实现，也就是在重要函数的入口和出口分别增加Trace.beginSection和Trace.endSection,
+ *       当然出于性能的考虑，我们会过滤大部分指令数比较少的函数；只在主线程中监控；系统中Loop 的handlerMessage() 方法前后就调用了Trace类；
+ *
+ *  - 为什么主线程Looper.loop()进行事件分发耗时代表app卡顿？
+ *    VSync信号由SurfaceFlinger实现并定时发送（每16ms发送），Choreographer主要功能是当收到VSync信号，然后发送Handler消息；在Looper.loop()
+ *    方法进行渲染下一帧，如果上一个消息分发时间过长即msg.target.dispatchMessage(msg)执行时间过长，就会导致在VSYNC到来时进行下一帧渲染延迟执行，
+ *    就不能保证该帧在16ms内完成渲染，从而导致丢帧；通过检测msg.target.dispatchMessage(msg)执行时间就可以检测APP卡顿；
+ *
+ *    Android 中View的渲染、事件分发、键盘输入、Activity等的生命周期变化都是Handler消息机制处理；
+ *
+ * 9、LeakCanary的原理：https://blog.csdn.net/u011060103/article/details/104973708
+ *
+ *
  */
 public class AndroidTest {
 }
