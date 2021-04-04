@@ -81,13 +81,16 @@ package com.leetcode.demo.java.android;
  *     - map变换后可以返回任意值，flatMap只能返回ObservableSource类型
  *     - map只能进行一对一的变换；flatMap可以进行一对一、一对多、多对多的变换，根据我们设置的变换函数mapper来定；
  *
- * 11、依赖注入Jetpack Hilt 、流式编程、LiveData
+ * 11、依赖注入Jetpack Hilt 、流式编程、LiveData、Lifecycle、Room、page
  *     - 函数响应式编程：基于观察者模式/发布-订阅模式来实现的，https://www.imooc.com/article/280217
  *     - LiveData:
  *
  * 12、Activity的onCreate() 中创建一个线程，和主线程相比，谁的优先级更高？
+ *     一样
  *
  * 13、项目中如何创建module通信的service的(接口)?
+ *
+ * 14、
  *
  */
 public class AndroidTest {
