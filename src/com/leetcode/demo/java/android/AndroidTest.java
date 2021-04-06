@@ -31,7 +31,7 @@ package com.leetcode.demo.java.android;
  *
  * 4、AIDL通信数据量大小：普通的由Zygote孵化而来的用户进程，所映射的Binder内存大小是不到1M的；
  *
- * 5、性能优化工具：leakCanary、profile（内存泄漏);trace（卡顿和ANR）
+ * 5、性能优化工具：leakCanary、profile（内存泄漏);trace（卡顿和ANR）；BlockCanary(卡顿)
  *
  * 6、app冷启动时间统计
  *
@@ -86,8 +86,11 @@ package com.leetcode.demo.java.android;
  *     - LiveData:
  *
  * 12、Activity的onCreate() 中创建一个线程，和主线程相比，谁的优先级更高？
+ *     优先级一样
  *
  * 13、项目中如何创建module通信的service的(接口)?
+ *     组件话，1、现在gradle配置对应的IApplicationLike的实现类全类名、在onCreate() 通过key、value形式，添加ServiceImpl类对象；
+ *     在gradle编译期间，插入对应的代码，在module 加载过程中，通过key获取ServiceImpl对象；
  *
  */
 public class AndroidTest {
