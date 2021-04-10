@@ -1,6 +1,7 @@
 package com.leetcode.demo;
 
 import com.leetcode.demo.java.base.codeblock.Swallow;
+import com.leetcode.demo.middle.array.IncreasingTriplet;
 
 public class Main {
 
@@ -54,10 +55,12 @@ public class Main {
 //        CodeBlock test = new CodeBlock();
 //        test.println();
 
-        Swallow swallow = new Swallow();
+//        Swallow swallow = new Swallow();
 //        LongestPalindromeStr.test();
 
 //        MetaJavaQuestionSheet.test();
+
+        IncreasingTriplet.test();
     }
 
 }
