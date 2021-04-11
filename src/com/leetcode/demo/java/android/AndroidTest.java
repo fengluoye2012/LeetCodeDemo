@@ -83,7 +83,8 @@ package com.leetcode.demo.java.android;
  *
  * 11、依赖注入Jetpack Hilt 、流式编程、LiveData、Lifecycle、Room、page
  *     - 函数响应式编程：基于观察者模式/发布-订阅模式来实现的，https://www.imooc.com/article/280217
- *     - LiveData:
+ *     - LiveData: https://www.jianshu.com/p/b04abbb766e0
+ *       -
  *
  * 12、Activity的onCreate() 中创建一个线程，和主线程相比，谁的优先级更高？
  *     优先级一样
@@ -92,7 +93,17 @@ package com.leetcode.demo.java.android;
  *     组件话，1、现在gradle配置对应的IApplicationLike的实现类全类名、在onCreate() 通过key、value形式，添加ServiceImpl类对象；
  *     在gradle编译期间，插入对应的代码，在module 加载过程中，通过key获取ServiceImpl对象；
  *
- * 14、
+ * 14、OkHttp:拦截器、网络拦截器和应用拦截器的区别，
+ *    应用拦截器：一般添加Header、打印请求日志和返回值信息；
+ *    拦截器：https://blog.csdn.net/qq_38499859/article/details/82355954
+ *     - 普通拦截器放（自己添加）：不需要担心是否影响OKHttp的请求策略和请求速度，即使从缓存中取数据，也会执行Application拦截器
+ *     - 尝试重定向拦截器：失败重连，默认最多重试20次；
+ *     - 桥接拦截器：补充http请求的请求头，如编码方式、内容长度、压缩方式等
+ *     - 缓存拦截器：缓存策略
+ *     - 链接拦截器：
+ *     - 网络拦截器(自己添加)：可以修改OkHttp框架自动添加的一些属性，即允许操作中间响应，比如当请求操作发生重定向或者重试等。
+ *     - 调用拦截器：负责将我们的http请求写进网络io中，并且从网络io中读取服务端返回的数据。
+ *    eventListener的用处；监视整个应用中网络请求次数、流量大小、耗时情况。
  *
  */
 public class AndroidTest {
