@@ -105,6 +105,12 @@ package com.leetcode.demo.java.android;
  *     - 调用拦截器：负责将我们的http请求写进网络io中，并且从网络io中读取服务端返回的数据。
  *    eventListener的用处；监视整个应用中网络请求次数、流量大小、耗时情况。
  *
+ * 15、LayoutInflater 的inflater 的attachToRoot参数
+ *     1、如果root不为null，attachToRoot设为true，则会给加载的布局文件的指定一个父布局，即root。
+ *     2、如果root不为null，attachToRoot设为false，则会将布局文件最外层的所有layout属性进行设置，当该view被添加到父view当中时，这些layout属性会自动生效。
+ *
+ * 16、父容器是wrap_content,自定义View 继承View 也是wrap_content,则自定义的宽高是多少：屏幕宽高；
+ *    为什么你的自定义View wrap_content不起作用？https://blog.csdn.net/carson_ho/article/details/62037760
  */
 public class AndroidTest {
 }
