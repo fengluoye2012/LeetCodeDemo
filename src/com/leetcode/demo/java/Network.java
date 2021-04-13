@@ -32,6 +32,24 @@ package com.leetcode.demo.java;
  * 1）get 请求用来获取数据，参数拼在url后面 大小有限 安全性差；效率要比post高
  * 2）post 向服务器发送数据，通过body/表单的形式发送数据，传送数据较大  更安全；
  *
+ * 14、OkHttp:拦截器、网络拦截器和应用拦截器的区别，
+ *     应用拦截器：一般添加Header、打印请求日志和返回值信息；
+ *     拦截器：https://blog.csdn.net/qq_38499859/article/details/82355954
+ *       - 普通拦截器放（自己添加）：不需要担心是否影响OKHttp的请求策略和请求速度，即使从缓存中取数据，也会执行Application拦截器
+ *       - 尝试重定向拦截器：失败重连，默认最多重试20次；
+ *       - 桥接拦截器：补充http请求的请求头，如编码方式、内容长度、压缩方式等
+ *       - 缓存拦截器：缓存策略
+ *       - 链接拦截器：
+ *       - 网络拦截器(自己添加)：可以修改OkHttp框架自动添加的一些属性，即允许操作中间响应，比如当请求操作发生重定向或者重试等。
+ *       - 调用拦截器：负责将我们的http请求写进网络io中，并且从网络io中读取服务端返回的数据。
+ *    eventListener的用处；监视整个应用中网络请求次数、流量大小、耗时情况。
+ *
+ * Http 三次握手：
+ *
+ * Https 请求过程：
+ *
+ * Http 同步请求和异步请求如何实现的？https://www.jianshu.com/p/3214ef86a52d
+ * - 在RealCall 中调用execute()/enqueue() 方法，enqueue() 方法传入的是AsyncCall,内部使用线程池执行runnable；
  */
 public class Network {
 }

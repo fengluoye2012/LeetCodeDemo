@@ -3,7 +3,9 @@ package com.leetcode.demo.java.android;
 /**
  * 1、ArrayMap
  *
- * 2、- Handler：
+ * 2、- Handler：用来切换线程；目前主要用在ActivityThread、RxJava、EventBus等源码中;
+ *      Handler如何切换线程的？
+ *
  *   - IdleHandler（在主线程空闲时执行同步任务，即可以做优先级低的业务逻辑；当messageQueue 为空时才执行；IdleHandler其实就是观察者模式，
  *   监听MessageQueue是否空闲，空闲时触发回调函数，为了避免过多导致耗时，最大为4个） todo 超过4个如何处理
  *   - view.post()：View的绘制在onResume() 之后，但是在onCreate()方法中通过view.post()获取view的宽高，view.post()也是调用Handler，
@@ -93,17 +95,7 @@ package com.leetcode.demo.java.android;
  *     组件话，1、现在gradle配置对应的IApplicationLike的实现类全类名、在onCreate() 通过key、value形式，添加ServiceImpl类对象；
  *     在gradle编译期间，插入对应的代码，在module 加载过程中，通过key获取ServiceImpl对象；
  *
- * 14、OkHttp:拦截器、网络拦截器和应用拦截器的区别，
- *    应用拦截器：一般添加Header、打印请求日志和返回值信息；
- *    拦截器：https://blog.csdn.net/qq_38499859/article/details/82355954
- *     - 普通拦截器放（自己添加）：不需要担心是否影响OKHttp的请求策略和请求速度，即使从缓存中取数据，也会执行Application拦截器
- *     - 尝试重定向拦截器：失败重连，默认最多重试20次；
- *     - 桥接拦截器：补充http请求的请求头，如编码方式、内容长度、压缩方式等
- *     - 缓存拦截器：缓存策略
- *     - 链接拦截器：
- *     - 网络拦截器(自己添加)：可以修改OkHttp框架自动添加的一些属性，即允许操作中间响应，比如当请求操作发生重定向或者重试等。
- *     - 调用拦截器：负责将我们的http请求写进网络io中，并且从网络io中读取服务端返回的数据。
- *    eventListener的用处；监视整个应用中网络请求次数、流量大小、耗时情况。
+ *
  *
  * 15、LayoutInflater 的inflater 的attachToRoot参数
  *     1、如果root不为null，attachToRoot设为true，则会给加载的布局文件的指定一个父布局，即root。
@@ -111,6 +103,13 @@ package com.leetcode.demo.java.android;
  *
  * 16、父容器是wrap_content,自定义View 继承View 也是wrap_content,则自定义的宽高是多少：屏幕宽高；
  *    为什么你的自定义View wrap_content不起作用？https://blog.csdn.net/carson_ho/article/details/62037760
+ *
+ * 17、EventBus 也是通过Handler 切换到主线程中；
+ *
+ * 18、Fresco 和 Glide 对比：Fresco 加载图片效率为什么更高？
+ *
+ *
  */
 public class AndroidTest {
+
 }
