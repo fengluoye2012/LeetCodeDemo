@@ -64,10 +64,10 @@ public class Main {
 
 //        IncreasingTriplet.test();
 
-//        ProductAndConsume productAndConsume = new ProductAndConsume();
-//        productAndConsume.productAndConsume();
+        ProductAndConsume productAndConsume = new ProductAndConsume();
+        productAndConsume.productAndConsume();
 
-        ReversalString.test();
+//        ReversalString.test();
     }
 
 }

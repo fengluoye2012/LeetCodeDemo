@@ -32,8 +32,13 @@ public class ProductAndConsume {
     private void product() {
         while (true) {
             synchronized (object) {
-                if (index > 100) {
-                    break;
+                if (queue.size() > 10) {
+                    try {
+                        System.out.println("队列满了");
+                        object.wait();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 index++;
                 queue.addFirst(index);
@@ -59,15 +64,18 @@ public class ProductAndConsume {
 
         private void consume() {
             synchronized (object) {
-                if (queue.size() == 0) {
+                if (queue.isEmpty()) {
                     try {
+                        System.out.println("队列空了");
                         object.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                Integer integer = queue.removeLast();
-                System.out.println("integer:" + integer);
+                if (!queue.isEmpty()) {
+                    Integer integer = queue.removeLast();
+                    System.out.println("integer:" + integer);
+                }
 
                 object.notifyAll();
 
