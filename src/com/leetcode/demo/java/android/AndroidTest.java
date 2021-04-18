@@ -105,9 +105,18 @@ package com.leetcode.demo.java.android;
  *    为什么你的自定义View wrap_content不起作用？https://blog.csdn.net/carson_ho/article/details/62037760
  *
  * 17、EventBus 也是通过Handler 切换到主线程中；
+ *     - 线程类型：
  *
  * 18、Fresco 和 Glide 对比：Fresco 加载图片效率为什么更高？
  *
+ * 19、双亲委托机制：如何判断当前类由谁加载
+ *
+ * 20、插件化原理
+ *
+ * 21、SP commit和apply的区别
+ *     - sharedPreference在同时提交commit时，是会等待当前commit保存到磁盘后，才进行保存，会影响效率，而apply是只提交内容，后面有调用apply的函数的将会直接覆盖前面的内存数据，效率加快。
+ *     - apply是不会有失败提示，如果需要提示保存内容成功，用commit比apply好，单纯保存数据而不需要提示信息，apply比commit好，commit是阻塞api
+ *     - apply是没有返回值的，而commit是会返回boolean的；
  *
  */
 public class AndroidTest {

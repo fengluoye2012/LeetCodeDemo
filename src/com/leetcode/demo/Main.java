@@ -1,7 +1,9 @@
 package com.leetcode.demo;
 
+import com.leetcode.demo.java.base.codeblock.ProductAndConsume;
 import com.leetcode.demo.java.base.codeblock.Swallow;
 import com.leetcode.demo.middle.array.IncreasingTriplet;
+import com.leetcode.demo.other.ReversalString;
 
 public class Main {
 
@@ -60,7 +62,12 @@ public class Main {
 
 //        MetaJavaQuestionSheet.test();
 
-        IncreasingTriplet.test();
+//        IncreasingTriplet.test();
+
+//        ProductAndConsume productAndConsume = new ProductAndConsume();
+//        productAndConsume.productAndConsume();
+
+        ReversalString.test();
     }
 
 }

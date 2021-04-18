@@ -37,11 +37,6 @@ public class LevelOrder {
     }
 
 
-    //递归层序遍历
-    public List<List<Integer>> levelOrder3(TreeNode root){
-        return null;
-    }
-
 
     //效率低，超越10.69的用户；
     //利用队列先进先出的特性；树的广度优先搜索

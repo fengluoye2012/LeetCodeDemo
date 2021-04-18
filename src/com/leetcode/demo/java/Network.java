@@ -44,9 +44,9 @@ package com.leetcode.demo.java;
  *       - 调用拦截器：负责将我们的http请求写进网络io中，并且从网络io中读取服务端返回的数据。
  *    eventListener的用处；监视整个应用中网络请求次数、流量大小、耗时情况。
  *
- * Http 三次握手：
+ * Http 三次握手/：
  *
- * Https 请求过程：
+ * Https 请求过程：https://blog.csdn.net/qq_24601199/article/details/104362401
  *
  * Http 同步请求和异步请求如何实现的？https://www.jianshu.com/p/3214ef86a52d
  * - 在RealCall 中调用execute()/enqueue() 方法，enqueue() 方法传入的是AsyncCall,内部使用线程池执行runnable；
