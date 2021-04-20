@@ -6,11 +6,17 @@ package com.leetcode.demo.java.android;
  * 2、- Handler：用来切换线程；目前主要用在ActivityThread、RxJava、EventBus等源码中;
  *      Handler如何切换线程的？
  *
- *   - IdleHandler（在主线程空闲时执行同步任务，即可以做优先级低的业务逻辑；当messageQueue 为空时才执行；IdleHandler其实就是观察者模式，
- *   监听MessageQueue是否空闲，空闲时触发回调函数，为了避免过多导致耗时，最大为4个） todo 超过4个如何处理
- *   - view.post()：View的绘制在onResume() 之后，但是在onCreate()方法中通过view.post()获取view的宽高，view.post()也是调用Handler，
- *   对任务的运行时机做了调整，通过View.post()添加的任务西先保存在本地，是在View绘制流程的开始阶段，将所有任务重新发送到消息消息队列的尾部，
- *   此时相关的任务的执行已经在绘制任务之后，即View的绘制流程已经结束；
+ *    - IdleHandler（在主线程空闲时执行同步任务，即可以做优先级低的业务逻辑；当messageQueue 为空时才执行；IdleHandler其实就是观察者模式，
+ *      监听MessageQueue是否空闲，空闲时触发回调函数，为了避免过多导致耗时，最大为4个） todo 超过4个如何处理
+ *    - view.post()：View的绘制在onResume() 之后，但是在onCreate()方法中通过view.post()获取view的宽高，view.post()也是调用Handler，
+ *      对任务的运行时机做了调整，通过View.post()添加的任务西先保存在本地，是在View绘制流程的开始阶段，将所有任务重新发送到消息消息队列的尾部，
+ *      此时相关的任务的执行已经在绘制任务之后，即View的绘制流程已经结束；
+ *
+ *    - 异步消息 todo
+ *
+ *    - Handler 消息机制C++ 层处理 todo https://xiaozhuanlan.com/topic/0843791256
+ *
+ *    - Handler中Linux的I/O 多路复用机制epoll
  *
  * 3、RecyclerView 的二级缓存：https://blog.csdn.net/weixin_43130724/article/details/90068112
  *    - mCachedViews是一个 ArrayList 类型，不区分 viewHolder 的类型，大小限制为2，保存的是最新被划出屏幕的两个ViewHolder
@@ -79,6 +85,16 @@ package com.leetcode.demo.java.android;
  *
  *    - 深度分析Hprof文件，单独开一个进程，开始深度分析
  *
+ * 10、内存优化：
+ *     - 布局优化
+ *     - 降低内存泄漏
+ *     - 使用ArrayMap、SpareArray 代替HashMap
+ *     - 各种第三方库使用相同场景使用同一线程池，降低多个线程池线程被创建对内存的占用；
+ *     - 使用场景下，使用链表代替数组：链表内存分散，不需要整块内存；
+ *     - 图片资源按需加载不同尺寸：图片转换为webp格式，1）服务端不同场景返回不同尺寸；2）加载图片inSampleSize/ResizeOptions 对图片进行缩放、裁剪；
+ *     - 视频资源进行降码率和H265压缩，降低视频源大小，降低流量消耗
+ *
+ *
  * 10、RxJava map和floatMap 区别
  *     - map变换后可以返回任意值，flatMap只能返回ObservableSource类型
  *     - map只能进行一对一的变换；flatMap可以进行一对一、一对多、多对多的变换，根据我们设置的变换函数mapper来定；
@@ -108,6 +124,9 @@ package com.leetcode.demo.java.android;
  *     - 线程类型：
  *
  * 18、Fresco 和 Glide 对比：Fresco 加载图片效率为什么更高？
+ *     - Fresco加载图片原理：https://blog.csdn.net/u010687392/article/details/50266633
+ *     - Fresco 加载图片机制，如何异步获取图片显示的(生产消费者模型)
+ *     - Fresco 源码分析：https://www.imooc.com/article/251804
  *
  * 19、双亲委托机制：如何判断当前类由谁加载
  *
@@ -117,6 +136,14 @@ package com.leetcode.demo.java.android;
  *     - sharedPreference在同时提交commit时，是会等待当前commit保存到磁盘后，才进行保存，会影响效率，而apply是只提交内容，后面有调用apply的函数的将会直接覆盖前面的内存数据，效率加快。
  *     - apply是不会有失败提示，如果需要提示保存内容成功，用commit比apply好，单纯保存数据而不需要提示信息，apply比commit好，commit是阻塞api
  *     - apply是没有返回值的，而commit是会返回boolean的；
+ *
+ * 22、ActivityThread和ApplicationThread的区别：
+ *
+ * 23、线程池优化：
+ *     线程池数量优化，不同第三方库如：OkHttp、Fresco、RxJava中都使用了线程池，如果每个库使用默认线程池会导致创建线程池数量较多，
+ *     每个线程池中又创建了不同的线程数，最后无法控制整个app中同时存在多少个线程，对内存影响较大；
+ *
+ *
  *
  */
 public class AndroidTest {

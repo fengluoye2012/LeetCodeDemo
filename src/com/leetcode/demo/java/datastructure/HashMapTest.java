@@ -1,6 +1,8 @@
 package com.leetcode.demo.java.datastructure;
 
 /**
+ * 泛型：编译时转换为Object类型，在运行时确定具体类型；
+ *
  * HashMap(1.8)：
  *  - 结构:数组+单链表/红黑树(单链表长度大于8，并且数组长度大于64)
  *  - put流程:1）hash 对数组长度取模，找到对应index，对应value为空，则直接插入
