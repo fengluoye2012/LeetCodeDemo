@@ -32,7 +32,7 @@ package com.leetcode.demo.java.base;
  *    - ReentrantLock原理：https://crossoverjie.top/2018/01/25/ReentrantLock/ todo
  *
  *      - AbstractQueuedSynchronizer(AQS)内存在双向链表，将等待执行的线程添加到队列中，先进先出；
- *      - 调用lock时判断是否为阻塞状态，1）如果为非阻塞状态使用CAS改变状态，1.1）链表中是否存在已等待的线程任务，存在的话，将当前任务插入队列尾，；
+ *      - 公平锁：调用lock时判断是否为阻塞状态，1）非阻塞状态，链表中是否存在已等待的线程任务，不存在，使用CAS改变状态，；存在的话，将当前任务插入队列尾，取出；
  *      2）阻塞状态，判断是否同一个线程，是,状态加1；
  *
  * 4、synchronized对象锁和类锁的区别？
@@ -43,7 +43,6 @@ package com.leetcode.demo.java.base;
  *   - 类锁和对象锁是不同的锁：类中存在类锁和对象锁，不同线程可以同时访问这两个方法；两个方法是异步执行；
  *   - 类锁对同一个类中的同一个锁互斥；对象锁不同对象之间不存在互斥；
  *   - 不同的锁不存在阻塞关系
- *
  *
  */
 public class Concurrence {
