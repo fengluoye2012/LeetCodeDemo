@@ -6,21 +6,85 @@
 
 CAS原理
 
-公平锁和非公平锁
+
+
+**ReentrantLock**实现锁依赖于**队列（双向链表AQS）**和**CAS**来实现的；主要提供对外暴露方法，主要包含以下三个类：
+
+- 抽象的Sync继承AQS(AbstractQueuedSynchronizer)是非公平锁NonfairSync和公平锁FairSync的父类；
+
+  - ```java
+    final boolean nonfairTryAcquire(int acquires) {}
+    protected final boolean tryRelease(int releases) {}
+    ```
+
+- 非平锁NonfairSync重写了lock和tryAcquire()方法；线程A释放锁时，新线程提交，会抢占锁，不按照等待顺序执行；
+
+- 公平锁FairSync重写了lock和tryAcquire()方法；按照线程等待时间顺序执行；
+
+####AbstractQueuedSynchronizer(双向链表AQS)
+
+**AQS**提供阻塞锁和其他相关的锁(如：semaphores、CountDownLatch)的基础框架，**AQS**依赖于原子类来实现状态改变（如更新state的value、设置头节点、尾节点、设置节点的waitStatus状态、设置下一个节点操作都是CAS来实现的保证线程安全）。
+
+```java
+
+public final void acquire(int arg) {}
+protected boolean tryAcquire(int arg) {}
+private Node addWaiter(Node mode) {}
+private Node enq(final Node node) {}
+final boolean acquireQueued(final Node node, int arg) {}
+private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {}
+private final boolean parkAndCheckInterrupt() {}
+private void cancelAcquire(Node node) {}
+
+public final boolean release(int arg) {}
+private void unparkSuccessor(Node node) {}
+
+```
 
 
 
+**AQS静态内部类Node**
 
+```java
+static final class Node {
+   
+    //线程的状态：默认值为0，如是否取消、等待唤醒等状态
+    volatile int waitStatus;
 
-**ReentrantLock**实现锁依赖于**CAS**和**队列（双向链表AQS）**来实现的；
+    //上一个节点
+    volatile Node prev;
 
+    //下一个节点
+    volatile Node next;
 
+    //将被执行的线程；
+    volatile Thread thread;
 
-#### 非公平锁：
+    //下一个nextWaiter节点；分为share的模式和抢占模式；
+    Node nextWaiter;
+
+    Node() {    // Used to establish initial head or SHARED marker
+    }
+    
+    //addWaiter()方法初始化node调用的构造函数；
+    Node(Thread thread, Node mode) {     // Used by addWaiter
+        this.nextWaiter = mode;
+        this.thread = thread;
+    }
+    
+    //
+    Node(Thread thread, int waitStatus) { // Used by Condition
+        this.waitStatus = waitStatus;
+        this.thread = thread;
+    }
+}
+```
+
+#### 非公平锁NonfairSync：
 
 非公平锁：在线程释放锁时，线程A刚提交试图抢占锁，可能不会从等待队列中取出最先等待的线程执行；因为队列中的线程需要被唤醒才能被CPU调度；
 
-lock流程
+#### lock流程
 
 ```java
 final void lock() {
@@ -77,8 +141,6 @@ final boolean nonfairTryAcquire(int acquires) {
 }
 ```
 
-
-
 **AbstractQueuedSynchronizer**的addWaiter()方法：将当前节点添加到队列尾，
 
 ```java
@@ -125,8 +187,6 @@ private Node enq(final Node node) {
 }
 ```
 
-
-
 **AbstractQueuedSynchronizer**的acquireQueued()方法：不断的判断节点nod的上一个节点是否为头节点并且能够获取锁；
 
 返回值true表示node节点的上一个节点为头节点，并且当前线程获取到锁；
@@ -163,9 +223,11 @@ final boolean acquireQueued(final Node node, int arg) {
 }
 ```
 
-**AbstractQueuedSynchronizer**的shouldParkAfterFailedAcquire()方法：检查并且更新获取锁失败的节点状态，已经处于waitStatus为Node.SIGNAL状态为直接返回true；否则返回false；
+**AbstractQueuedSynchronizer**的shouldParkAfterFailedAcquire()方法：检查并且更新获取锁失败的节点状态；
 
-waitStatus大于0 表示线程被取消，从等待队列中删除；其他情况则将waitStatus更新为Node.SIGNAL；
+- 1）已经处于waitStatus为Node.SIGNAL状态为直接返回true；否则返回false；
+- 2）waitStatus大于0 表示线程被取消，从等待队列中删除；
+- 3）其他情况则将waitStatus更新为Node.SIGNAL；
 
 ```java
 private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
@@ -209,7 +271,79 @@ private final boolean parkAndCheckInterrupt() {
 }
 ```
 
-unlock() 流程
+**ReentrantLock**的tryLock()方法分为几种情况：
+
+- 1）没有其他线程持有锁，则当前线程持有锁，state状态加一，返回true；
+- 2）当前线程持有了锁，状态加一，返回true;
+- 3） 其他线程持有锁，当前等待一定时间内持有锁则返回true；否则被中断，返回false;
+
+```java
+public boolean tryLock(long timeout, TimeUnit unit)
+        throws InterruptedException {
+    return sync.tryAcquireNanos(1, unit.toNanos(timeout));
+}
+```
+
+**AbstractQueuedSynchronizer**的tryAcquireNanos() 在一定时间内是否能够抢占锁；
+
+```java
+public final boolean tryAcquireNanos(int arg, long nanosTimeout)
+        throws InterruptedException {
+    //线程被中断则直接跑出异常；
+    if (Thread.interrupted())
+        throw new InterruptedException();
+    //tryAcquire() 当前线程尝试抢占锁；
+    return tryAcquire(arg) ||
+        doAcquireNanos(arg, nanosTimeout);
+}
+```
+
+**AbstractQueuedSynchronizer**的doAcquireNanos()：在一定时间内尝试抢占锁；
+
+```java
+private boolean doAcquireNanos(int arg, long nanosTimeout)
+        throws InterruptedException {
+    if (nanosTimeout <= 0L)
+        return false;
+    final long deadline = System.nanoTime() + nanosTimeout;
+    //将当前线程添加到等待队列尾；
+    final Node node = addWaiter(Node.EXCLUSIVE);
+    boolean failed = true;
+    try {
+        for (;;) {
+            //获取上一个节点；
+            final Node p = node.predecessor();
+            //如果节点p是头节点，尝试抢占锁；抢占成功则重新设置头节点，返回true;
+            if (p == head && tryAcquire(arg)) {
+                setHead(node);
+                p.next = null; // help GC
+                failed = false;
+                return true;
+            }
+            
+            nanosTimeout = deadline - System.nanoTime();
+            //如果超时，直接返回false；
+            if (nanosTimeout <= 0L)
+                return false;
+            //检查并且更新获取锁失败的节点状态，1）已经处于waitStatus为Node.SIGNAL状态为直接返回true；否则返回false；
+            //2）waitStatus大于0 表示线程被取消，从等待队列中删除；
+            //3）其他情况则将waitStatus更新为Node.SIGNAL；
+            if (shouldParkAfterFailedAcquire(p, node) &&
+                nanosTimeout > spinForTimeoutThreshold)
+                LockSupport.parkNanos(this, nanosTimeout);
+            if (Thread.interrupted())
+                throw new InterruptedException();
+        }
+    } finally {
+        if (failed)
+            cancelAcquire(node);
+    }
+}
+```
+
+####unlock() 流程
+
+unlock() 流程：返回true 表示调state的值减为0，释放锁了，同时存在可唤醒的节点，唤醒节点中阻塞的线程，等待CPU调度；否则释放锁还在持有锁；
 
 ```java
 public final boolean release(int arg) {
@@ -225,7 +359,7 @@ public final boolean release(int arg) {
 }
 ```
 
-
+tryRelease()：尝试释放锁，更新state状态，多次调用unlock()将state的值减到0，才释放锁；
 
 ```java
 protected final boolean tryRelease(int releases) {
@@ -277,3 +411,102 @@ private void unparkSuccessor(Node node) {
         LockSupport.unpark(s.thread);
 }
 ```
+
+#### 公平锁FairSync
+
+**公平锁FairSync**的lock()流程和**非公平锁NonfairSync**的lock()流程基本一致，**不同点**在tryAcquire()方法中，调用lock()方法时，没有线程持有锁，**公平锁等待队列中为空，当前线程才会抢占锁**；**非公平锁直接抢占锁，不管等待队列是否为空**；
+
+```java
+final void lock() {
+    acquire(1);
+}
+```
+
+**FairSync**的tryAcquire()：公平锁等待队列中为空，当前线程才会抢占锁；如果当前线程已经持有锁，直接更新state状态；
+
+```java
+protected final boolean tryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    //没有线程持有锁；
+    if (c == 0) {
+        //先判断队列中是否存在等待节点；没有等待节点，使用CAS改变state状态成功，当前线程持有锁；
+        if (!hasQueuedPredecessors() &&
+            compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    //lock是重入锁；当前线程已经持有锁，再次获取锁更新state状态，不阻塞自己；
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0)
+            throw new Error("Maximum lock count exceeded");
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
+
+unlock()和**非公平锁NonfairSync**的unlock()流程完全一致。
+
+
+
+**AQS内部类ConditionObject**主要是用来配合**ReentrantLock**实现线程间通信类似Synchronized和Object的wai t()和notify()、notifyAll()方法；主要方法有await()和signal()方法
+
+```java 
+public final void await() throws InterruptedException {
+    if (Thread.interrupted())
+        throw new InterruptedException();
+    //将等待线程添加到队列尾；
+    Node node = addConditionWaiter();
+    //
+    int savedState = fullyRelease(node);
+    int interruptMode = 0;
+    //
+    while (!isOnSyncQueue(node)) {
+        LockSupport.park(this);
+        if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+            break;
+    }
+    if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+        interruptMode = REINTERRUPT;
+    if (node.nextWaiter != null) // clean up if cancelled
+        unlinkCancelledWaiters();
+    if (interruptMode != 0)
+        reportInterruptAfterWait(interruptMode);
+}
+```
+
+addConditionWaiter()：将等待线程添加到等待队列尾，返回尾节点；
+
+```java
+private Node addConditionWaiter() {
+    Node t = lastWaiter;
+    // If lastWaiter is cancelled, clean out.
+    //清除waitStatus 不为Node.CONDITION的节点；
+    if (t != null && t.waitStatus != Node.CONDITION) {
+        unlinkCancelledWaiters();
+        t = lastWaiter;
+    }
+    //创建waitStatus为Node.CONDITION的节点；
+    Node node = new Node(Thread.currentThread(), Node.CONDITION);
+    //添加到节点中；
+    if (t == null)
+        firstWaiter = node;
+    else
+        t.nextWaiter = node;
+    lastWaiter = node;
+    return node;
+}
+```
+
+
+
+
+
+
+
+
+
