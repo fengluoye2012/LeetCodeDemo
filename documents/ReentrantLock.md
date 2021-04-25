@@ -1,12 +1,32 @@
-**ReentrantLock**的流程
+**ReentrantLock**的源码分析
 
+由于synchronized是java关键字，无法通过阅读源码深入学习实现线程安全或者阻塞的原理和过程，可以通过分析**ReentrantLock**如何实现线程安全和阻塞的原理，更加深入理解学习。
 
+#### 线程状态切换
 
-线程状态切换
+线程状态分别为：
 
-CAS原理
+**NEW**：创建状态：创建线程了，还没有开始调用start()方法；
 
+**RUNNABLE**：可执行状态：调用了start()方法或者正在被Java虚拟机执行，实际上可以分为等待执行状态和正在执行中；
 
+**BLOCKED**：阻塞状态：1）等待其他线程释放锁，进入同步代码块；2）调用了Object类的wait()方法、Codition类的await()方法后，再次进入同步代码块；
+
+**WAITING**：等待状态：分为以下三种情况：1）调用了**Object**类的wait()方法、**Codition**类的await()方法，没有等待超时；2）调用了**Thread**的join()方法没有等待超时，常见情况线程A调用join()方法，等待线程B执行完成再执行；3）调用了**LockSupport**的park()方法，该方法在下文中经常看到；
+
+**TIMED_WAITING**：指定时间的等待状态，分为以下几种：1）调用了**Thread**的sleep()方法；2）调用了**Object**的wait(long) 方法；3）调用**Thread**的join(long)方法；4）调用**LockSupport**的parkNanos()方法；5）调用**LockSupport**的parkUntil()方法；
+
+**TERMINAED**：终止状态，线程执行完成；
+
+![线程状态切换](/Users/mac/Desktop/AppDemo/LeetCodeDemo/documents/线程状态切换.png)
+
+#### CAS原理
+
+主要原理是线程工作内存在对变量进行修改时，先从主内存中（内存地址V）拷贝一份到工作内存中（旧的预期值A），在工作内存中重新拷贝一份进行修改（要修改的新值B），修改完成之后，写入到主内存时，先判断内存地址V和旧的预期值A是否一致，一致则表示没有其他线程修改过，线程安全，将要修改的新值B写入到主内存中。
+
+详细问题可参考其他文章详解；
+
+#### **ReentrantLock**
 
 **ReentrantLock**实现锁依赖于**队列（双向链表AQS）**和**CAS**来实现的；主要提供对外暴露方法，主要包含以下三个类：
 
@@ -21,12 +41,18 @@ CAS原理
 
 - 公平锁FairSync重写了lock和tryAcquire()方法；按照线程等待时间顺序执行；
 
-####AbstractQueuedSynchronizer(双向链表AQS)
+**ReentrantLock**锁的特性
+
+- 手动调用lock和unlock 方法，lock和unlock()方法成对出现；尤其是unlock()放在finally方法中执行，防止异常造成死锁；
+- 可主动终止；
+- 重入锁：当前线程持有锁，再次获取锁直接将state加一，不会阻塞自己；
+
+####AbstractQueuedSynchronizer(AQS双向链表)
 
 **AQS**提供阻塞锁和其他相关的锁(如：semaphores、CountDownLatch)的基础框架，**AQS**依赖于原子类来实现状态改变（如更新state的value、设置头节点、尾节点、设置节点的waitStatus状态、设置下一个节点操作都是CAS来实现的保证线程安全）。
 
 ```java
-
+//lock流程主要方法
 public final void acquire(int arg) {}
 protected boolean tryAcquire(int arg) {}
 private Node addWaiter(Node mode) {}
@@ -35,15 +61,14 @@ final boolean acquireQueued(final Node node, int arg) {}
 private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {}
 private final boolean parkAndCheckInterrupt() {}
 private void cancelAcquire(Node node) {}
-
+//unlock流程主要方法
 public final boolean release(int arg) {}
 private void unparkSuccessor(Node node) {}
-
 ```
 
 
 
-**AQS静态内部类Node**
+#### AQS静态内部类Node
 
 ```java
 static final class Node {
@@ -80,11 +105,9 @@ static final class Node {
 }
 ```
 
-#### 非公平锁NonfairSync：
-
-非公平锁：在线程释放锁时，线程A刚提交试图抢占锁，可能不会从等待队列中取出最先等待的线程执行；因为队列中的线程需要被唤醒才能被CPU调度；
-
 #### lock流程
+
+非公平锁的lock()方法
 
 ```java
 final void lock() {
@@ -412,7 +435,7 @@ private void unparkSuccessor(Node node) {
 }
 ```
 
-#### 公平锁FairSync
+#### 公平锁FairSync的lock和unlock
 
 **公平锁FairSync**的lock()流程和**非公平锁NonfairSync**的lock()流程基本一致，**不同点**在tryAcquire()方法中，调用lock()方法时，没有线程持有锁，**公平锁等待队列中为空，当前线程才会抢占锁**；**非公平锁直接抢占锁，不管等待队列是否为空**；
 
@@ -453,27 +476,71 @@ unlock()和**非公平锁NonfairSync**的unlock()流程完全一致。
 
 
 
-**AQS内部类ConditionObject**主要是用来配合**ReentrantLock**实现线程间通信类似Synchronized和Object的wai t()和notify()、notifyAll()方法；主要方法有await()和signal()方法
+#### Condition的await()和signal流程
+
+**AQS内部类ConditionObject**主要是用来配合**ReentrantLock**实现线程间通信类似Synchronized和Object的wai t()和notify()、notifyAll()方法；主要方法有await()和signal()方法。
+
+**AQS内部类ConditionObject**类中维持了一个condition队列（实际上是双向链表）；
+
+```java
+public class ConditionObject implements Condition, java.io.Serializable {
+    private static final long serialVersionUID = 1173984872572414699L;
+    /** First node of condition queue. */
+    //头节点
+    private transient Node firstWaiter;
+    /** Last node of condition queue. */
+    //尾节点
+    private transient Node lastWaiter;
+    
+    //将线程由可执行状态切换为阻塞状态
+    public final void await() throws InterruptedException {}
+    
+    //添加到等待队列中；
+    private Node addConditionWaiter() {}
+    
+    //将线程由阻塞状态切换为可执行状态
+    public final void signal() {}
+  
+    //从ConditionObject队列头找到第一个没有取消的线程唤醒，添加到AQS的队列中，等待CPU调度；
+    private void doSignal(Node first) {}
+   
+    //如果节点waitStatus不为Node.CONDITION，说明线程已经被取消，返回false；否则将waitStatus状态设置为0；将节点添加到AQS的等待队列中，返回true；
+    final boolean transferForSignal(Node node) {}
+}
+```
+
+
+
+**AQS内部类ConditionObject**的await()主要1）将**ConditionObject**中waitStatus不等于Node.CONDITION的节点删除，将调用await()方法的线程添加到Condination队列尾；2）释放当前线程持有的锁；3）判断当前线程是否存在AQS的队列中，不存在，则阻塞，返回线程是否处于中断状态；如果中断，当前线程在AQS队列中返回THROW_IE（-1），不在队列中，返回REINTERRUPT（1）；
 
 ```java 
 public final void await() throws InterruptedException {
     if (Thread.interrupted())
         throw new InterruptedException();
-    //将等待线程添加到队列尾；
+    //删除waitStatus不等于Node.CONDITION状态的节点，将等待线程添加到队列尾,；
     Node node = addConditionWaiter();
-    //
+    //释放当前线程持有的锁，返回锁的状态；
     int savedState = fullyRelease(node);
     int interruptMode = 0;
-    //
+    //节点node不存在AQS等待队列中；
     while (!isOnSyncQueue(node)) {
+        //阻塞线程；
         LockSupport.park(this);
+        //判断线程是否已经中断；1）已经中断，1.1）添加到AQS等待队列中 返回THROW_IE(-1);
+        //1.2)没有添加到AQS等待队列中，返回REINTERRUPT(1);2)没有中断则返回0；
         if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
             break;
     }
+    
+    //没有将线程添加到AQS等待队列中,则不断的判断当前线程对应的节点是否位于队列头并且获得锁，
+    //返回值true表示当前线程对应的节点位于队列头，并且获取到锁；具体参考lock流程；
     if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
         interruptMode = REINTERRUPT;
+  
+    //删除Condination队列中waitStatus不为Node.CONDITION的节点；
     if (node.nextWaiter != null) // clean up if cancelled
         unlinkCancelledWaiters();
+  
     if (interruptMode != 0)
         reportInterruptAfterWait(interruptMode);
 }
@@ -487,9 +554,11 @@ private Node addConditionWaiter() {
     // If lastWaiter is cancelled, clean out.
     //清除waitStatus 不为Node.CONDITION的节点；
     if (t != null && t.waitStatus != Node.CONDITION) {
+        //从头节点开始删除waitStatus不等于Node.CONDITION状态的节点；
         unlinkCancelledWaiters();
         t = lastWaiter;
     }
+    
     //创建waitStatus为Node.CONDITION的节点；
     Node node = new Node(Thread.currentThread(), Node.CONDITION);
     //添加到节点中；
@@ -502,11 +571,203 @@ private Node addConditionWaiter() {
 }
 ```
 
+**AQS的fullyRelease()方法**：释放锁，唤醒节点中阻塞的线程；如果释放锁失败，则取消线程；release()方法的解析具体可参考unlock()流程；
+
+```java
+final int fullyRelease(Node node) {
+    boolean failed = true;
+    try {
+        int savedState = getState();
+        //返回true 表示调state的值减为0，释放锁了，同时存在可唤醒的节点，唤醒节点中阻塞的线程，等待CPU调度；否则释放锁还在持有锁；
+        if (release(savedState)) {
+            failed = false;
+            return savedState;
+        } else {
+            throw new IllegalMonitorStateException();
+        }
+    } finally {
+        if (failed)
+            node.waitStatus = Node.CANCELLED;
+    }
+}
+```
 
 
 
+**AQS**的isOnSyncQueue()：判断节点是否在**AQS**的队列中，**不同于Codination类维持的队列**；
+
+```java
+final boolean isOnSyncQueue(Node node) {
+    //节点的waitStatus为Node.CONDITION 或者 prev节点为空；
+    if (node.waitStatus == Node.CONDITION || node.prev == null)
+        return false;
+    //有后序节点肯定在AQS的队列中
+    if (node.next != null) // If has successor, it must be on queue
+        return true;
+    
+    //遍历AQS的等待队列，判断node是否存在;
+    return findNodeFromTail(node);
+}
+```
+
+**AQS**的checkInterruptWhileWaiting()：判断线程是否中断，没有中断直接返回0；已经中断了，1）waitStatus为Node.CONDITION，使用CAS更新为0，将线程添加到**AQS**等待队列中，返回THROW_IE（-1）；否则返回REINTERRUPT（1）；
+
+```java
+private int checkInterruptWhileWaiting(Node node) {
+    return Thread.interrupted() ?
+        (transferAfterCancelledWait(node) ? THROW_IE : REINTERRUPT) :
+        0;
+}
+```
+
+**AQS内部类ConditionObject**的await(long time, TimeUnit unit)方法主要流程和await()方法类似，主要的不同在于超过等待时间没有被唤醒，将当前线程添加到**AQS**等待队列中；
+
+返回值false表示等待超时，也没有被主动唤醒；其他情况返回true
+
+```java
+public final boolean await(long time, TimeUnit unit)
+        throws InterruptedException {
+    //等待时间；
+    long nanosTimeout = unit.toNanos(time);
+    if (Thread.interrupted())
+        throw new InterruptedException();
+    //添加到Contition队列中；
+    Node node = addConditionWaiter();
+    //释放锁
+    int savedState = fullyRelease(node);
+    //等待时间；
+    final long deadline = System.nanoTime() + nanosTimeout;
+    boolean timedout = false;
+    int interruptMode = 0;
+  
+    //不在AQS等待队列中，超时时，尝试添加到等待队列中；
+    while (!isOnSyncQueue(node)) {
+        //等待超时,1）直接更新状态为0，添加到AQS队列中等待队列中，timeout为true；
+        //2）不在AQS队列中，将线程转换为可执行状态；返回false;
+        if (nanosTimeout <= 0L) {
+            timedout = transferAfterCancelledWait(node);
+            break;
+        }
+      
+        //等待时间超过1000纳秒，则让线程阻塞；
+        if (nanosTimeout >= spinForTimeoutThreshold)
+            LockSupport.parkNanos(this, nanosTimeout);
+      
+        //线程已经中断则直接退出；
+        if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+            break;
+        //剩余等待时间；
+        nanosTimeout = deadline - System.nanoTime();
+    }
+    
+   //interruptMode不为THROW_IE（没有将线程添加到AQS等待队列红），尝试获取锁；
+    if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+        interruptMode = REINTERRUPT;
+  
+    //删除Condination队列中waitStatus不为Node.CONDITION的节点；
+    if (node.nextWaiter != null)
+        unlinkCancelledWaiters();
+  
+    if (interruptMode != 0)
+        reportInterruptAfterWait(interruptMode);
+    return !timedout;
+}
+```
+
+signal()方法：只能唤醒一个调用过await()方法的线程，从ConditionObject队列头找到第一个没有取消的线程唤醒，添加到AQS的队列中，等待CPU调度；
+
+```java
+public final void signal() {
+    //当前线程不持有锁，则抛出异常；
+    if (!isHeldExclusively())
+        throw new IllegalMonitorStateException();
+  
+    //取出头节点；
+    Node first = firstWaiter;
+    //头节点不为空；
+    if (first != null)
+        doSignal(first);
+}
+```
+
+doSignal()：只能唤醒一个调用过await()方法的线程，从**ConditionObject**队列头找到第一个没有取消的线程唤醒，添加到AQS的队列中，等待CPU调度；
+
+```java
+private void doSignal(Node first) {
+    //
+    do {
+        //队列为空，将尾节点置null；
+        if ( (firstWaiter = first.nextWaiter) == null)
+            lastWaiter = null;
+      
+        first.nextWaiter = null;
+      
+      //头节点不为null;并且唤醒头节点中的线程失败，继续往下找；直到找到没有取消的线程唤醒；
+    } while (!transferForSignal(first) &&
+             (first = firstWaiter) != null);
+}
+```
+
+transferForSignal()：如果节点waitStatus不为Node.CONDITION，说明线程已经被取消，返回false；否则将waitStatus状态设置为0；将节点添加到AQS的等待队列中，返回true；
+
+```java
+final boolean transferForSignal(Node node) {
+    /*
+     * If cannot change waitStatus, the node has been cancelled.
+     */
+    //如果waitStatus不为Node.CONDITION，说明线程已经被取消；
+    if (!compareAndSetWaitStatus(node, Node.CONDITION, 0))
+        return false;
+
+    //将节点添加到AQS等待队列中；
+    Node p = enq(node);
+    int ws = p.waitStatus;
+    //线程被取消或者没法设置为SIGNAL状态，唤醒线程；
+    if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL))
+        LockSupport.unpark(node.thread);
+    return true;
+}
+```
+
+signalAll()方法和signal()方法类似，主要区别在唤醒**ConditionObject**所有没有取消的等待线程；
+
+```java
+public final void signalAll() {
+    if (!isHeldExclusively())
+        throw new IllegalMonitorStateException();
+    Node first = firstWaiter;
+    if (first != null)
+        //内部遍历链表，依次调用transferForSignal()方法；
+        doSignalAll(first);
+}
+```
+
+doSignalAll() 遍历链表依次调用transferForSignal()方法，将所有没有被取消的线程添加到AQS队列中。
+
+```java
+
+private void doSignalAll(Node first) {
+    //置空队列；
+    lastWaiter = firstWaiter = null;
+    do {
+        Node next = first.nextWaiter;
+        first.nextWaiter = null;
+        transferForSignal(first);
+        first = next;
+    } while (first != null);
+}
+```
+
+#### 结论
+
+**ReentrantLock**使用**AQS**来时线程线程安全的，**AQS**内部以CAS来实现线程阻塞。
+
+**ReentrantLock**锁的特性
+
+- 手动调用lock和unlock 方法，lock和unlock()方法成对出现；尤其是unlock()放在finally方法中执行，防止异常造成死锁；
+- 可手动终止
+- 重入锁：当前线程持有锁，再次获取锁直接将state加一，不会阻塞自己；
 
 
 
-
-
+以上就是**ReentrantLock**的主要流程，和相关代码分析。如有误差，请多指教，谢谢！

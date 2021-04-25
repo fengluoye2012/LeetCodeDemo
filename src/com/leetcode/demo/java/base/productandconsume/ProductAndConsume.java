@@ -1,4 +1,4 @@
-package com.leetcode.demo.java.base.codeblock;
+package com.leetcode.demo.java.base.productandconsume;
 
 import java.util.LinkedList;
 import java.util.Random;
