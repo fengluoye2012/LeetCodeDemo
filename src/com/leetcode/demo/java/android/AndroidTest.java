@@ -140,8 +140,10 @@ package com.leetcode.demo.java.android;
  * 22、ActivityThread和ApplicationThread的区别：
  *
  * 23、线程池优化：
- *     线程池数量优化，不同第三方库如：OkHttp、Fresco、RxJava中都使用了线程池，如果每个库使用默认线程池会导致创建线程池数量较多，
- *     每个线程池中又创建了不同的线程数，最后无法控制整个app中同时存在多少个线程，对内存影响较大；
+ *     - 线程池数量优化，不同第三方库如：OkHttp、Fresco、RxJava中都使用了线程池，如果每个库使用默认线程池会导致创建线程池数量较多，
+ *       每个线程池中又创建了不同的线程数，最后无法控制整个app中同时存在多少个线程，对内存影响较大；
+ *
+ *     - 项目中多个不同第三方库如okhttp、rxjava、retrofit、下载库 等线程池优化，网络并发优化,网速抢占 等问题;
  *
  *
  *
