@@ -41,7 +41,7 @@ public class CusLinkedList<T> {
             //存在
             if ((tem.value == null && value == null) || (value != null && value.equals(tem.value))) {
                 //删除节点
-                remove(tem);
+                remove2(tem);
                 break;
             }
             tem = tem.next;
@@ -72,6 +72,30 @@ public class CusLinkedList<T> {
         //将下一个节点的往前移动即可；
         node.pre.next = node.next;
         node.value = node.next.value;
+    }
+
+    //删除当前节点
+    public void remove2(Node<T> node) {
+        T value = node.value;
+        Node<T> pre = node.pre;
+        Node<T> next = node.next;
+
+        //1-2-3-4
+        //被删除的是头节点
+        if (pre == null) {
+            head = next;
+        } else {
+            //删除中间节点
+            pre.next = next;
+        }
+
+        //被删除的是尾节点
+        if (next == null) {
+            //no thing
+        } else {
+            next.pre = pre;
+        }
+        node.value = null;
     }
 
     @Override
