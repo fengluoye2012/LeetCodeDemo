@@ -1,6 +1,7 @@
 package com.leetcode.demo;
 
 import com.leetcode.demo.java.base.productandconsume.ProductAndConsume;
+import com.leetcode.demo.other.CusLinkedListTest;
 
 public class Main {
 
@@ -61,10 +62,12 @@ public class Main {
 
 //        IncreasingTriplet.test();
 
-        ProductAndConsume productAndConsume = new ProductAndConsume();
-        productAndConsume.productAndConsume();
+//        ProductAndConsume productAndConsume = new ProductAndConsume();
+//        productAndConsume.productAndConsume();
 
 //        ReversalString.test();
+
+        CusLinkedListTest.test();
     }
 
 }

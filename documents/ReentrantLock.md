@@ -2,6 +2,13 @@
 
 由于synchronized是java关键字，无法通过阅读源码深入学习实现线程安全或者阻塞的原理和过程，可以通过分析**ReentrantLock**如何实现线程安全和阻塞的原理，更加深入理解学习。
 
+可以带着一下问题去思考：
+
+- 线程A持有锁，其他线程等待着抢占锁，等待线程如何处理呢？
+- 线程A释放锁后，以哪种顺序从等待队列唤醒等待线程？
+- 重入锁如何实现的，lock()和unlock()方法为什么成对出现？
+- 使用Codition的await()、signal()/signalAll()方法，如何实现线程间通信的？
+
 #### 线程状态切换
 
 线程状态分别为：
@@ -47,7 +54,7 @@
 - 可主动终止；
 - 重入锁：当前线程持有锁，再次获取锁直接将state加一，不会阻塞自己；
 
-####AbstractQueuedSynchronizer(AQS双向链表)
+#### AbstractQueuedSynchronizer(AQS双向链表)
 
 **AQS**提供阻塞锁和其他相关的锁(如：semaphores、CountDownLatch)的基础框架，**AQS**依赖于原子类来实现状态改变（如更新state的value、设置头节点、尾节点、设置节点的waitStatus状态、设置下一个节点操作都是CAS来实现的保证线程安全）。
 
@@ -364,7 +371,7 @@ private boolean doAcquireNanos(int arg, long nanosTimeout)
 }
 ```
 
-####unlock() 流程
+#### unlock() 流程
 
 unlock() 流程：返回true 表示调state的值减为0，释放锁了，同时存在可唤醒的节点，唤醒节点中阻塞的线程，等待CPU调度；否则释放锁还在持有锁；
 

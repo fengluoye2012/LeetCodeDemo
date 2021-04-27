@@ -29,6 +29,8 @@ package com.leetcode.demo.java.base;
  *    - 公平锁：公平锁按照任务提交时间顺序执行；
  *    - 非公平锁：抢占式，其他线程任务等待时间长；cpu正在执行当前线程任务，在等待的线程处于休眠状态，当前任务执行完成后，恰好有个线程提交，可能会执行刚提交的线程；
  *
+ *    - synchronized的线程屏障 todo
+ *
  *    - ReentrantLock原理：https://crossoverjie.top/2018/01/25/ReentrantLock/ todo
  *
  *      - AbstractQueuedSynchronizer(AQS)内存在双向链表，将等待执行的线程添加到队列中，先进先出；
