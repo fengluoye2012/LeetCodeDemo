@@ -1,4 +1,4 @@
-package com.leetcode.demo.thread;
+package com.leetcode.demo.java.base.thread;
 
 public class ThreadInterrupt {
 

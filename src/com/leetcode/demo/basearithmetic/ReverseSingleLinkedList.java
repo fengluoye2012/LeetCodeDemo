@@ -1,6 +1,6 @@
-package com.leetcode.demo.base;
+package com.leetcode.demo.basearithmetic;
 
-import com.leetcode.demo.Node;
+import com.leetcode.demo.others.Node;
 
 //反转单链表
 public class ReverseSingleLinkedList {

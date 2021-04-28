@@ -1,4 +1,4 @@
-package com.leetcode.demo.base;
+package com.leetcode.demo.basearithmetic;
 
 import java.util.Arrays;
 

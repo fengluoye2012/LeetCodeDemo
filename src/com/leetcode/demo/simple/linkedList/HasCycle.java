@@ -1,6 +1,6 @@
 package com.leetcode.demo.simple.linkedList;
 
-import com.leetcode.demo.Node;
+import com.leetcode.demo.others.Node;
 
 public class HasCycle {
 

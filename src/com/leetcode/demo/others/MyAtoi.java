@@ -1,4 +1,4 @@
-package com.leetcode.demo;
+package com.leetcode.demo.others;
 
 public class MyAtoi {
     public static void test() {

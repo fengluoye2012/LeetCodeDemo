@@ -1,6 +1,4 @@
-package com.leetcode.demo.base;
-
-import java.util.Arrays;
+package com.leetcode.demo.basearithmetic;
 
 //二分查找
 public class BinarySearch {

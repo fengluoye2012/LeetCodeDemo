@@ -1,6 +1,4 @@
-package com.leetcode.demo;
-
-import java.util.Stack;
+package com.leetcode.demo.others;
 
 public class ReverseNodeList {
 
