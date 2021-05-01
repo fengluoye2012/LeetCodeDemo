@@ -1,8 +1,6 @@
 package com.leetcode.demo;
 
-import com.leetcode.demo.java.base.productandconsume.ProductAndConsume;
 import com.leetcode.demo.java.base.thread.CountDownLatchTest;
-import com.leetcode.demo.other.CusLinkedListTest;
 
 public class Main {
 
@@ -60,6 +58,8 @@ public class Main {
 //        LongestPalindromeStr.test();
 
 //        MetaJavaQuestionSheet.test();
+
+//        IncreasingTriplet.test();
 
 //        IncreasingTriplet.test();
 
