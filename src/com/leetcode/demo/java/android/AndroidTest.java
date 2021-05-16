@@ -145,8 +145,6 @@ package com.leetcode.demo.java.android;
  *
  *     - 项目中多个不同第三方库如okhttp、rxjava、retrofit、下载库 等线程池优化，网络并发优化,网速抢占 等问题;
  *
- *
- *
  */
 public class AndroidTest {
 
